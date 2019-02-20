@@ -23,14 +23,14 @@ std::ostream & operator<<(std::ostream & out, ReadGroup const & G)
 
 	out << G.groupheader_o << " ";
 	out.write(G.groupheader.begin(),G.groupheader_o);
-	
+
 	out << ' ';
 
 	out << G.groupfile_o << " ";
 	out.write(G.groupfile.begin(),G.groupfile_o);
-	
+
 	out << ' ';
 	out << G.numreads;
-	
+
 	return out;
 }

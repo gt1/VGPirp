@@ -20,9 +20,9 @@
 std::ostream & operator<<(std::ostream & out, Provenance const & P)
 {
 	out << "! " << P.steps.size() << "\n";
-	
+
 	for ( std::size_t i = 0; i < P.steps.size(); ++i )
 		out << P.steps[i] << "\n";
-	
+
 	return out;
 }

@@ -27,22 +27,22 @@ struct BaseValid
 	: bValid(256)
 	{
 		for ( int i = 0; i < 256; ++i )
-			if ( 
-				i == 'a' || 
-				i == 'c' || 
-				i == 'g' || 
-				i == 't' || 
-				i == 'n' || 
-				i == 'A' || 
-				i == 'C' || 
-				i == 'G' || 
-				i == 'T' || 
+			if (
+				i == 'a' ||
+				i == 'c' ||
+				i == 'g' ||
+				i == 't' ||
+				i == 'n' ||
+				i == 'A' ||
+				i == 'C' ||
+				i == 'G' ||
+				i == 'T' ||
 				i == 'N'
 			)
 				bValid[i] = 1;
 			else
 				bValid[i] = 0;
-	
+
 	}
 };
 #endif

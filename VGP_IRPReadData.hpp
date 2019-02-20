@@ -22,14 +22,14 @@
 
 struct IRPReadData
 {
-	AutoArray<char> N;	
+	AutoArray<char> N;
 	vgp_number_type N_o;
-	
-	AutoArray<char> S;	
+
+	AutoArray<char> S;
 	vgp_number_type S_o;
 	AutoArray<char> Q;
 	vgp_number_type Q_o;
-	
+
 	IRPReadData() : N(), N_o(0), S(), S_o(0), Q(), Q_o(0) {}
 };
 #endif

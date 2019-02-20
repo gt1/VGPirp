@@ -26,7 +26,7 @@ struct FileType
 	std::string filetype;
 	vgp_number_type fileversion;
 	vgp_number_type filesubversion;
-	
+
 	FileType() {}
 	FileType(LineBuffer & LB) : fileversion(0), filesubversion(0)
 	{
@@ -37,13 +37,13 @@ struct FileType
 	{
 		char const * la = NULL;
 		char const * le = NULL;
-		
+
 		std::size_t found = 0;
 
 		while ( LB.getline(&la,&le) )
 		{
 			char const * linestart = la;
-			
+
 			if ( la != le && *la == '.' )
 			{
 				++la;
@@ -53,38 +53,38 @@ struct FileType
 					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after plus in ") + std::string(linestart,le));
 				}
 				la++;
-				
+
 				if ( la == le )
 				{
-					throw FileTypeException(std::string("FileType::readFileTypeLine: no line type in ") + std::string(linestart,le));				
+					throw FileTypeException(std::string("FileType::readFileTypeLine: no line type in ") + std::string(linestart,le));
 				}
-				
+
 				char const * typestart = la;
 				while ( la != le && isalnum(*la) )
 					++la;
 
 				char const * typeend = la;
-				
+
 				filetype = std::string(typestart,typeend);
 
 				if ( la == le || *la != ' ' )
 				{
-					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after line type type in ") + std::string(linestart,le));				
+					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after line type type in ") + std::string(linestart,le));
 				}
-				
+
 				++la;
 
 				fileversion = BaseOp::getNumber(la,le);
 
 				if ( la == le || *la != ' ' )
 				{
-					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after line type type in ") + std::string(linestart,le));				
+					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after line type type in ") + std::string(linestart,le));
 				}
-				
+
 				++la;
 
 				filesubversion = BaseOp::getNumber(la,le);
-				
+
 				found += 1;
 			}
 			else
@@ -93,7 +93,7 @@ struct FileType
 				break;
 			}
 		}
-		
+
 		if ( found != 1 )
 		{
 			throw FileTypeException(std::string("FileType::readFileTypeLine: no (unique) file type line found"));

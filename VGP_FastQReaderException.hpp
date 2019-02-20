@@ -28,9 +28,9 @@ struct FastQReaderException : public std::exception
 	FastQReaderException()
 	{}
 	FastQReaderException(std::string const & rmessage) : message(rmessage) {}
-		
+
 	~FastQReaderException() throw() {}
-	
+
 	char const * what() const throw()
 	{
 	    return message.c_str();

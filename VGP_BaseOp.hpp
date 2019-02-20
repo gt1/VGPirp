@@ -25,6 +25,8 @@ struct BaseOp
 {
 	static vgp_number_type getNumber(char const * & pc, char const * pe)
 	{
+		char const * start = pc;
+
 		vgp_number_type n = 0;
 		unsigned int nc = 0;
 		while ( (pc != pe) && isdigit(*pc) )
@@ -33,75 +35,79 @@ struct BaseOp
 			nc += 1;
 			n += *(pc++)-'0';
 		}
-		
+
 		if ( !nc )
 		{
-			throw BaseOpException("BaseOp::getNumber: Did not find expected number");
+			throw BaseOpException(std::string("BaseOp::getNumber: Did not find expected number in ") + std::string(start,pe));
 		}
-	
+
 		return n;
 	}
 
 	static std::string parseString(char const * & pc, char const * pe)
 	{
+		char const * start = pc;
+
 		vgp_number_type const n = getNumber(pc,pe);
-		
+
 		if ( pc == pe || *pc != ' ' )
 		{
-			throw BaseOpException("BaseOp::parseString: No space found after string length");		
+			throw BaseOpException("BaseOp::parseString: No space found after string length");
 		}
-		
+
 		pc += 1;
-		
+
 		if ( pe - pc < static_cast< ::std::ptrdiff_t >(n) )
 		{
-			throw BaseOpException("BaseOp: Insufficient string data");
+			throw BaseOpException(std::string("BaseOp: Insufficient string data in ") + std::string(start,pe));
 		}
-		
+
 		std::string const s(pc,pc+n);
-		
+
 		pc += n;
-		
+
 		if ( pc != pe && *pc == ' ' )
 			pc += 1;
-		
+
 		return s;
 	}
 
 	static vgp_number_type parseString(char const * & pc, char const * pe, AutoArray<char> & A)
 	{
+		char const * start = pc;
+
 		vgp_number_type const n = getNumber(pc,pe);
-		
+
 		if ( pc == pe || *pc != ' ' )
 		{
-			throw BaseOpException("BaseOp::parseString: No space found after string length");		
+			throw BaseOpException("BaseOp::parseString: No space found after string length");
 		}
-		
+
 		pc += 1;
-		
+
 		if ( pe - pc < static_cast< ::std::ptrdiff_t >(n) )
 		{
-			throw BaseOpException("BaseOp: Insufficient string data");
+			throw BaseOpException(std::string("BaseOp: Insufficient string data in ") + std::string(start,pe));
 		}
-		
+
 		A.ensureSize(n);
-		
+
 		std::copy(pc,pc+n,A.begin());
-		
+
 		pc += n;
-		
+
 		if ( pc != pe && *pc == ' ' )
 			pc += 1;
-		
+
 		return n;
 	}
-	
+
 	static std::ostream & printString(std::ostream & out, std::string const & s)
 	{
 		out << s.size() << " " << s;
 		return out;
 	}
-	
+
 	static std::ostream & printNumberMaxSize(std::ostream & out, vgp_number_type n)
 	{
 		unsigned int const numlen = 20; /* >= ceil(log_10(2^64-1)) */
@@ -127,7 +133,7 @@ struct BaseOp
 			{
 				throw BaseOpException("BaseOp::printNumberMaxSize: number does not fit into fixed size format");
 			}
-			
+
 			while ( pc != pa )
 			{
 				--pc;
@@ -135,13 +141,13 @@ struct BaseOp
 				i += 1;
 			}
 		}
-		
+
 		while ( i < numlen )
 		{
 			out << ' ';
 			i += 1;
 		}
-		
+
 		return out;
 	}
 };

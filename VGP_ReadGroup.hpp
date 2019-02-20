@@ -29,7 +29,7 @@ struct ReadGroup
 	vgp_number_type groupfile_o;
 	vgp_number_type numreads;
 	vgp_number_type numseen;
-	
+
 	ReadGroup() : groupheader(), groupheader_o(0), groupfile(), groupfile_o(0), numreads(0), numseen(0) {}
 };
 

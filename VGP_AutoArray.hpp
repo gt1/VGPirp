@@ -29,8 +29,8 @@ struct AutoArray
 
 	type * A;
 	std::size_t n;
-	
-	
+
+
 	public:
 	AutoArray() : A(NULL), n(0) {}
 	AutoArray(std::size_t const rn) : n(rn)
@@ -42,12 +42,12 @@ struct AutoArray
 	{
 		*this = O;
 	}
-	
+
 	std::size_t size() const
 	{
 		return n;
 	}
-	
+
 	type & operator[](std::size_t const i)
 	{
 		return A[i];
@@ -57,41 +57,41 @@ struct AutoArray
 	{
 		return A[i];
 	}
-	
+
 	AutoArray<type> & operator=(AutoArray<type> & O)
 	{
 		delete [] A;
 		A = NULL;
-		
+
 		A = O.A;
 		n = O.n;
-		
+
 		O.A = NULL;
 		O.n = 0;
-		
+
 		return *this;
 	}
-	
+
 	void resize(std::size_t const rn)
 	{
 		type * NA = new type[rn];
-		
+
 		std::size_t const tocopy = std::min(n,rn);
-		
+
 		std::copy(A,A+tocopy,NA);
-		
+
 		delete [] A;
-		
+
 		A = NA;
 		n = rn;
 	}
-	
+
 	void ensureSize(std::size_t const rn)
 	{
 		while ( size() < rn )
 			bump();
 	}
-	
+
 	void bump()
 	{
 		if ( size() )
@@ -99,7 +99,7 @@ struct AutoArray
 		else
 			resize(1);
 	}
-	
+
 	type const * begin() const
 	{
 		return A;

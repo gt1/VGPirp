@@ -28,9 +28,9 @@ struct LineBufferException : public std::exception
 	LineBufferException()
 	{}
 	LineBufferException(std::string const & rmessage) : message(rmessage) {}
-		
+
 	~LineBufferException() throw() {}
-	
+
 	char const * what() const throw()
 	{
 	    return message.c_str();

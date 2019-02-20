@@ -29,7 +29,7 @@ struct BaseOpException : public std::exception
 	BaseOpException(std::string const & rmessage) : message(rmessage) {}
 	~BaseOpException() throw()
 	{
-	
+
 	}
 
 	char const * what() const throw()

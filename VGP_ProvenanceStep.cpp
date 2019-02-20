@@ -26,6 +26,6 @@ std::ostream & operator<<(std::ostream & out, ProvenanceStep const & P)
 	BaseOp::printString(out,P.command);
 	out.put(' ');
 	BaseOp::printString(out,P.date);
-	
+
 	return out;
 }

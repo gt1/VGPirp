@@ -22,9 +22,9 @@
 std::string quote(std::string const s)
 {
 	std::ostringstream ostr;
-	
+
 	ostr << '"';
-	
+
 	for ( uint64_t i = 0; i < s.size(); ++i )
 		if ( s[i] == '"' )
 		{
@@ -35,10 +35,68 @@ std::string quote(std::string const s)
 		{
 			ostr.put(s[i]);
 		}
-	
+
 	ostr << '"';
-	
+
 	return ostr.str();
+}
+
+std::string getGroupLineMax(std::string const & lane, std::vector<std::string> Vin, vgp_number_type n)
+{
+	std::ostringstream ostr;
+
+	ostr << "g"
+		<< " " << MaxNumberPrint(n)
+		<< " " << lane.size() << " " << lane;
+
+	std::ostringstream fnostr;
+
+	for ( uint64_t i = 0; i < Vin.size(); ++i )
+	{
+		if ( i )
+			fnostr << ",";
+
+		fnostr << quote(Vin[i]);
+	}
+
+	std::string const fn = fnostr.str();
+
+	ostr << " " << fn.size() << " " << fn;
+
+	return ostr.str();
+}
+
+std::string getGroupLine(std::string const & lane, std::vector<std::string> Vin, vgp_number_type n, std::size_t const minlen)
+{
+	std::ostringstream ostr;
+
+	ostr << "g"
+		<< " " << n
+		<< " " << lane.size() << " " << lane;
+
+	std::ostringstream fnostr;
+
+	for ( uint64_t i = 0; i < Vin.size(); ++i )
+	{
+		if ( i )
+			fnostr << ",";
+
+		fnostr << quote(Vin[i]);
+	}
+
+	std::string const fn = fnostr.str();
+
+	ostr << " " << fn.size() << " " << fn;
+
+	std::string s = ostr.str();
+
+	if ( s.size() < minlen )
+	{
+		std::string const pad(minlen-s.size(),' ');
+		s += pad;
+	}
+
+	return s;
 }
 
 int main(int argc, char * argv[])
@@ -50,23 +108,21 @@ int main(int argc, char * argv[])
 			std::cerr << "usage: " << argv[0] << " <out.irp> <in.fastq> [<in.fastq>]" << std::endl;
 			return EXIT_FAILURE;
 		}
-		
-		std::ostringstream readgrouplinestr;
-		
-		readgrouplinestr << "G lane " << quote(argv[2]);
-		if ( 3 < argc )
-			readgrouplinestr << "," << quote(argv[3]);
-		readgrouplinestr << " " << MaxNumberPrint(0);
 
-		std::string readgroupline = readgrouplinestr.str();
-		uint64_t readgrouplinelength = readgroupline.size();
-	
+		std::vector<std::string> Vin;
+		for ( uint64_t i = 2; i < argc; ++i )
+			Vin.push_back(argv[i]);
+
+		std::string const lane = "lane";
+		std::size_t const mingrouplensize = getGroupLineMax(lane,Vin,0).size();
+		std::string readgroupline = getGroupLine(lane,Vin,0,mingrouplensize);
+
 		IRPHeader header;
-		
+
 		header.FT.filetype = "VGPirp";
 		header.FT.fileversion = 1;
 		header.FT.filesubversion = 0;
-		
+
 		std::ostringstream comostr;
 		for ( uint64_t i = 0; i < argc; ++i )
 		{
@@ -75,7 +131,7 @@ int main(int argc, char * argv[])
 			comostr << quote(argv[i]);
 		}
 		std::string const com = comostr.str();
-		
+
 		header.P.steps.push_back(
 			ProvenanceStep(
 				argv[0],
@@ -84,52 +140,52 @@ int main(int argc, char * argv[])
 				"now"
 			)
 		);
-		
+
 		header.headerMap['#']['P'] = 0;
 		header.headerMap['#']['S'] = 0;
 		header.headerMap['@']['S'] = 0;
 		header.headerMap['+']['S'] = 0;
-		
+
 		std::fstream out(argv[1], std::ios::in | std::ios::out | std::ios::trunc);
 
 		std::ifstream * pistr0(new std::ifstream(argv[2]));
 		std::ifstream * pistr1 = NULL;
-		
+
 		if ( ! pistr0->is_open() )
 		{
 			std::cerr << "[E] unable to open " << argv[2] << std::endl;
 			return EXIT_FAILURE;
 		}
-		
+
 		if ( 3 < argc )
-		{	
+		{
 			std::ifstream * tistr1(new std::ifstream(argv[3]));
 			pistr1 = tistr1;
-			
+
 			if ( !pistr1->is_open() )
 			{
 				std::cerr << "[E] unable to open " << argv[3] << std::endl;
-				return EXIT_FAILURE;	
+				return EXIT_FAILURE;
 			}
 		}
-				
+
 		out << header;
 		out << readgroupline << "\n";
 
 		// std::cout << header;
-		
+
 		vgp_number_type numpairs = 0;
 		vgp_number_type numseq = 0;
 		vgp_number_type maxreadlen = 0;
 		vgp_number_type totalbp = 0;
-			
+
 		FastQReader * pFQR = NULL;
-		
+
 		if ( pistr1 )
 			pFQR = new FastQReader(*pistr0,*pistr1,1024*1024);
 		else
 			pFQR = new FastQReader(*pistr0,1024*1024);
-			
+
 		FastQReader & FQR = *pFQR;
 
 		FastQResult const * R = NULL;
@@ -137,13 +193,13 @@ int main(int argc, char * argv[])
 		{
 			numpairs += 1;
 			numseq += 2;
-		
+
 			out << 'P' << '\n';
-			
+
 			out << 'S' << ' ' << R->forward_o << ' ';
 			out.write(R->forward,R->forward_o);
 			out << '\n';
-			
+
 			out << 'Q' << ' ' << R->forward_o << ' ';
 			out.write(R->q_forward,R->forward_o);
 			out << '\n';
@@ -151,17 +207,17 @@ int main(int argc, char * argv[])
 			out << 'S' << ' ' << R->reverse_o << ' ';
 			out.write(R->reverse,R->reverse_o);
 			out << '\n';
-			
+
 			out << 'Q' << ' ' << R->reverse_o << ' ';
 			out.write(R->q_reverse,R->reverse_o);
 			out << '\n';
-			
+
 			maxreadlen = std::max(maxreadlen,R->forward_o);
 			maxreadlen = std::max(maxreadlen,R->reverse_o);
-			
+
 			totalbp += R->forward_o;
 			totalbp += R->reverse_o;
-			
+
 			#if 0
 			std::cout << "pos " << R->p << std::endl;
 			std::cout << *R;
@@ -172,31 +228,21 @@ int main(int argc, char * argv[])
 		header.headerMap['#']['S'] = numseq;
 		header.headerMap['@']['S'] = maxreadlen;
 		header.headerMap['+']['S'] = totalbp;
-		
+
 		// rewrite header and group line
 		out.seekp(0);
 		out << header;
-		
-		std::vector<char> readgrouplinevec(readgroupline.begin(),readgroupline.end());
-		while ( readgrouplinevec.size() && readgrouplinevec.back() == ' ' )
-			readgrouplinevec.pop_back();
-		assert ( readgrouplinevec.size() && readgrouplinevec.back() == '0' );
-		readgrouplinevec.pop_back();
-	
-		std::ostringstream newheaderlinestr;
-		newheaderlinestr << std::string(readgrouplinevec.begin(),readgrouplinevec.end());
-		newheaderlinestr << MaxNumberPrint(numpairs);
-		std::string const newheaderline = newheaderlinestr.str();
-		
-		out << newheaderline;
-		
+
+		readgroupline = getGroupLine(lane,Vin,numpairs,mingrouplensize);
+		out << readgroupline;
+
 		delete pFQR;
 		delete pistr1;
 		delete pistr0;
-		
+
 		#if 0
 		IRPReader IRP(std::cin,1024*1024);
-		
+
 		std::cout << IRP.header;
 		IRPResult const * R = NULL;
 		while ( (R = IRP.readData()) )

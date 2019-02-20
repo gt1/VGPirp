@@ -47,9 +47,9 @@ struct IRPReader : public BaseValid, public QValid
 
 	IRPReadData forward;
 	IRPReadData reverse;
-	
+
 	IRPResult IR;
-		
+
 	IRPReader(std::istream & rin, std::size_t buffersize = 1, bool const haveheader = true)
 	: BaseValid(), QValid(), in(rin), LB(in,buffersize), header()
 	{
@@ -63,24 +63,24 @@ struct IRPReader : public BaseValid, public QValid
 	{
 		char const * la = NULL;
 		char const * le = NULL;
-		
+
 		vgp_number_type fvalid = 0;
 		vgp_number_type rvalid = 0;
-		
+
 		forward.S_o = forward.Q_o = 0;
 		reverse.S_o = reverse.Q_o = 0;
 		bool qf = false;
 		bool qr = false;
-		
+
 		bool newrg = false;
 
 		// check for group lines
 		while ( LB.getline(&la,&le) )
 		{
-			if ( la != le && *la == 'G' )
+			if ( la != le && *la == 'g' )
 			{
 				char const * linestart = la;
-				
+
 				if (
 					RG.groupheader_o
 					&&
@@ -89,21 +89,29 @@ struct IRPReader : public BaseValid, public QValid
 				{
 					throw IRPReaderException(std::string("IRPReader::readData: read group ") + std::string(RG.groupheader.begin(),RG.groupheader.begin() + RG.groupheader_o) + std::string(" is incomplete"));
 				}
-				
+
 				++la;
-				
+
 				if ( la == le || *la != ' ' )
-				{				
-					throw IRPReaderException(std::string("IRPReader::readData: no space after G in ") + std::string(linestart,le));
+				{
+					throw IRPReaderException(std::string("IRPReader::readData: no space after g in ") + std::string(linestart,le));
 				}
-				
+
 				++la;
-				
+
+				RG.numreads = BaseOp::getNumber(la,le);
+
+				if ( la == le || *la != ' ' )
+				{
+					throw IRPReaderException(std::string("IRPReader::readData: no space after num reads in ") + std::string(linestart,le));
+				}
+
+				++la;
+
 				RG.groupheader_o = BaseOp::parseString(la,le,RG.groupheader);
 				RG.groupfile_o = BaseOp::parseString(la,le,RG.groupfile);
-				RG.numreads = BaseOp::getNumber(la,le);
 				RG.numseen = 0;
-				
+
 				if ( RG.numreads )
 					newrg = true;
 			}
@@ -113,10 +121,10 @@ struct IRPReader : public BaseValid, public QValid
 				break;
 			}
 		}
-		
+
 		// get stream position
 		vgp_number_type const spos = LB.getPos();
-		
+
 		// try to get P line
 		if ( LB.getline(&la,&le) )
 		{
@@ -139,28 +147,28 @@ struct IRPReader : public BaseValid, public QValid
 			{
 				throw IRPReaderException(std::string("IRPReader::readData: read group ") + std::string(RG.groupheader.begin(),RG.groupheader.begin() + RG.groupheader_o) + std::string(" is incomplete"));
 			}
-			
+
 			return NULL;
 		}
 
 		// try to get F line
 		if ( LB.getline(&la,&le) )
 		{
-			if ( la != le && *la == 'F' )
+			if ( la != le && *la == 'S' )
 			{
 				char const * linestart = la;
-				
+
 				++la;
-				
+
 				if ( la == le || *la != ' ' )
-				{				
+				{
 					throw IRPReaderException(std::string("IRPReader::readData: no space after F in ") + std::string(linestart,le));
 				}
-				
+
 				++la;
-				
+
 				forward.S_o = BaseOp::parseString(la,le,forward.S);
-				
+
 				fvalid += 1;
 			}
 			else
@@ -178,12 +186,12 @@ struct IRPReader : public BaseValid, public QValid
 				++la;
 
 				if ( la == le || *la != ' ' )
-				{				
+				{
 					throw IRPReaderException(std::string("IRPReader::readData: no space after Q in ") + std::string(linestart,le));
 				}
-				
+
 				++la;
-						
+
 				forward.Q_o = BaseOp::parseString(la,le,forward.Q);
 				qf = true;
 			}
@@ -192,24 +200,24 @@ struct IRPReader : public BaseValid, public QValid
 				LB.putback(la,le);
 			}
 		}
-		
+
 		if ( LB.getline(&la,&le) )
 		{
-			if ( la != le && *la == 'R' )
+			if ( la != le && *la == 'S' )
 			{
 				char const * linestart = la;
-				
+
 				++la;
-				
+
 				if ( la == le || *la != ' ' )
-				{				
+				{
 					throw IRPReaderException(std::string("IRPReader::readData: no space after R in ") + std::string(linestart,le));
 				}
-				
+
 				++la;
-				
+
 				reverse.S_o = BaseOp::parseString(la,le,reverse.S);
-				
+
 				rvalid += 1;
 			}
 			else
@@ -227,12 +235,12 @@ struct IRPReader : public BaseValid, public QValid
 				++la;
 
 				if ( la == le || *la != ' ' )
-				{				
+				{
 					throw IRPReaderException(std::string("IRPReader::readData: no space after Q in ") + std::string(linestart,le));
 				}
-				
+
 				++la;
-						
+
 				reverse.Q_o = BaseOp::parseString(la,le,reverse.Q);
 				qr = true;
 			}
@@ -245,31 +253,31 @@ struct IRPReader : public BaseValid, public QValid
 		bool fsymvalid = true;
 		for ( vgp_number_type i = 0; i < forward.S_o; ++i )
 			fsymvalid = fsymvalid && bValid[forward.S[i]];
-			
+
 		if ( ! fsymvalid )
 			throw IRPReaderException(std::string("IRPReader::readData: forward sequence is not valid ") + std::string(forward.S.begin(),forward.S.begin() + forward.S_o));
 
 		bool rsymvalid = true;
 		for ( vgp_number_type i = 0; i < reverse.S_o; ++i )
 			rsymvalid = rsymvalid && bValid[reverse.S[i]];
-			
+
 		if ( ! rsymvalid )
 			throw IRPReaderException(std::string("IRPReader::readData: reverse sequence is not valid ") + std::string(reverse.S.begin(),reverse.S.begin() + reverse.S_o));
 
 		bool fqualvalid = true;
 		for ( vgp_number_type i = 0; i < forward.Q_o; ++i )
 			fqualvalid = fqualvalid && qValid[forward.Q[i]];
-			
+
 		if ( ! fqualvalid )
 			throw IRPReaderException(std::string("IRPReader::readData: forward quality is not valid ") + std::string(forward.Q.begin(),forward.Q.begin() + forward.Q_o));
 
 		bool rqualvalid = true;
 		for ( vgp_number_type i = 0; i < reverse.Q_o; ++i )
 			rqualvalid = rqualvalid && qValid[reverse.Q[i]];
-			
+
 		if ( ! rqualvalid )
 			throw IRPReaderException(std::string("IRPReader::readData: reverse quality is not valid ") + std::string(reverse.Q.begin(),reverse.Q.begin() + reverse.Q_o));
-			
+
 		RG.numseen += 1;
 
 		IR = IRPResult(

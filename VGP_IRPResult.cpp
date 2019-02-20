@@ -33,13 +33,13 @@ std::ostream & operator<<(std::ostream & out, IRPResult const & R)
 	out << "R " << R.reverse_o << " ";
 	out.write(R.reverse,R.reverse_o);
 	out << "\n";
-	
+
 	if ( R.q_reverse )
 	{
 		out << "Q " << R.reverse_o << " ";
 		out.write(R.q_reverse,R.reverse_o);
-		out << "\n";		
+		out << "\n";
 	}
-	
+
 	return out;
 }

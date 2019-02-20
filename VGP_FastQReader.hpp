@@ -67,11 +67,11 @@ struct FastQResult
 	vgp_number_type reverse_name_o;
 
 	char const * reverse;
-	vgp_number_type reverse_o;	
+	vgp_number_type reverse_o;
 	char const * q_reverse;
-	
+
 	vgp_number_type p;
-	
+
 	FastQResult() {}
 	FastQResult(
 		char const * rforward_name,
@@ -85,7 +85,7 @@ struct FastQResult
 		vgp_number_type rreverse_name_o,
 
 		char const * rreverse,
-		vgp_number_type rreverse_o,	
+		vgp_number_type rreverse_o,
 		char const * rq_reverse,
 
 		vgp_number_type rp
@@ -102,7 +102,7 @@ struct FastQResult
 		q_reverse(rq_reverse),
 		p(rp)
 	{
-	
+
 	}
 };
 
@@ -130,7 +130,7 @@ std::ostream & operator<<(std::ostream & out, FastQResult const & R)
 	out.put('\n');
 	out.write(R.q_reverse,R.reverse_o);
 	out.put('\n');
-	
+
 	return out;
 }
 
@@ -147,18 +147,18 @@ struct FastQReader : public BaseValid, public QValid
 	std::istream * pin1;
 	std::istream & in0;
 	std::istream & in1;
-	
+
 	LineBuffer * pLB0;
 	LineBuffer * pLB1;
-	
+
 	LineBuffer & LB0;
 	LineBuffer & LB1;
 
 	IRPReadData forward;
 	IRPReadData reverse;
-	
+
 	FastQResult FR;
-		
+
 	FastQReader(::std::istream & rin, std::size_t buffersize = 1)
 	:
 		BaseValid(), QValid(),
@@ -197,7 +197,7 @@ struct FastQReader : public BaseValid, public QValid
 		LB0(*pLB0), LB1(*pLB0)
 	{
 	}
-	
+
 	~FastQReader()
 	{
 		delete pLB1;
@@ -205,12 +205,12 @@ struct FastQReader : public BaseValid, public QValid
 		delete pin1;
 		delete pin0;
 	}
-	
+
 	void getRead(LineBuffer & LB, IRPReadData & data)
 	{
 		char const * la = NULL;
 		char const * le = NULL;
-	
+
 		// read name
 		if ( LB.getline(&la,&le) )
 		{
@@ -220,7 +220,7 @@ struct FastQReader : public BaseValid, public QValid
 			{
 				// skip @
 				++la;
-				
+
 				data.N.ensureSize(le-la);
 				std::copy(la,le,data.N.begin());
 				data.N_o = le-la;
@@ -277,7 +277,7 @@ struct FastQReader : public BaseValid, public QValid
 		{
 			throw FastQReaderException(std::string("FastQReader::readData: no quality data found"));
 		}
-		
+
 		for ( std::size_t i = 0; i < data.S_o; ++i )
 			if ( ! bValid[data.S[i]] )
 			{
@@ -298,17 +298,17 @@ struct FastQReader : public BaseValid, public QValid
 	{
 		char const * la = NULL;
 		char const * le = NULL;
-		
+
 		vgp_number_type fvalid = 0;
 		vgp_number_type rvalid = 0;
-		
+
 		forward.S_o = forward.Q_o = forward.N_o = 0;
 		reverse.S_o = reverse.Q_o = reverse.N_o = 0;
 
 		// do we have a next line?
 		if ( LB0.getline(&la,&le) )
 		{
-			LB0.putback(la,le);			
+			LB0.putback(la,le);
 		}
 		else
 		{
@@ -317,7 +317,7 @@ struct FastQReader : public BaseValid, public QValid
 
 		// get stream position
 		vgp_number_type const spos = LB0.getPos();
-		
+
 		getRead(LB0,forward);
 		getRead(LB1,reverse);
 
@@ -334,7 +334,7 @@ struct FastQReader : public BaseValid, public QValid
 			reverse.Q.begin(),
 			spos
 		);
-		
+
 		return &FR;
 	}
 };

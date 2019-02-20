@@ -25,15 +25,15 @@ struct IRPResult
 	vgp_number_type forward_o;
 	char const * reverse;
 	vgp_number_type reverse_o;
-	
+
 	char const * q_forward;
 	char const * q_reverse;
-	
+
 	ReadGroup const * RG;
 	bool newrg;
-	
+
 	vgp_number_type p;
-	
+
 	IRPResult() {}
 	IRPResult(
 		char const * rforward,

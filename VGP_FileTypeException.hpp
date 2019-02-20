@@ -28,9 +28,9 @@ struct FileTypeException : public std::exception
 	FileTypeException()
 	{}
 	FileTypeException(std::string const & rmessage) : message(rmessage) {}
-		
+
 	~FileTypeException() throw() {}
-	
+
 	char const * what() const throw()
 	{
 	    return message.c_str();

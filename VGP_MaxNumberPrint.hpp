@@ -22,12 +22,12 @@
 struct MaxNumberPrint
 {
 	vgp_number_type n;
-	
+
 	MaxNumberPrint() {}
 	MaxNumberPrint(vgp_number_type const rn)
 	: n(rn)
 	{
-	
+
 	}
 };
 

@@ -28,9 +28,9 @@ struct IRPReaderException : public std::exception
 	IRPReaderException()
 	{}
 	IRPReaderException(std::string const & rmessage) : message(rmessage) {}
-		
+
 	~IRPReaderException() throw() {}
-	
+
 	char const * what() const throw()
 	{
 	    return message.c_str();

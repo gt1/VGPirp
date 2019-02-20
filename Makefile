@@ -1,6 +1,6 @@
 CXXFLAGS=-O3 -g
 
-BINARIES=VGP_fastqToIRP
+BINARIES=VGP_fastqToIRP VGP_IRPToFastQ
 
 HEADERS = VGP_AutoArray.hpp VGP_BaseOp.hpp VGP_BaseOpException.hpp VGP_BaseValid.hpp VGP_FastQReader.hpp VGP_FastQReaderException.hpp \
 	VGP_FileType.hpp VGP_FileTypeException.hpp VGP_IRPHeader.hpp VGP_IRPReadData.hpp VGP_IRPReader.hpp VGP_IRPReaderException.hpp \
@@ -29,6 +29,8 @@ VGP_ReadGroup.o: VGP_ReadGroup.cpp ${HEADERS}
 	${CXX} ${CXXFLAGS} -c VGP_ReadGroup.cpp -o VGP_ReadGroup.o
 VGP_fastqToIRP.o: VGP_fastqToIRP.cpp ${HEADERS}
 	${CXX} ${CXXFLAGS} -c VGP_fastqToIRP.cpp -o VGP_fastqToIRP.o
+VGP_IRPToFastQ.o: VGP_IRPToFastQ.cpp ${HEADERS}
+	${CXX} ${CXXFLAGS} -c VGP_IRPToFastQ.cpp -o VGP_IRPToFastQ.o
 
 LIBVGP_OBJECTS = VGP_BaseOpException.o VGP_FileType.o VGP_IRPHeader.o VGP_IRPResult.o VGP_LineBufferException.o VGP_MaxNumberPrint.o VGP_Provenance.o \
 	VGP_ProvenanceStep.o VGP_ReadGroup.o
@@ -37,6 +39,8 @@ libVGP.a: ${LIBVGP_OBJECTS}
 
 VGP_fastqToIRP: libVGP.a VGP_fastqToIRP.o
 	${CXX} -o VGP_fastqToIRP VGP_fastqToIRP.o -L. -lVGP
+VGP_IRPToFastQ: libVGP.a VGP_IRPToFastQ.o
+	${CXX} -o VGP_IRPToFastQ VGP_IRPToFastQ.o -L. -lVGP
 
 clean:
 	rm -f ${LIBVGP_OBJECTS}

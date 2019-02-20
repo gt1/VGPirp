@@ -26,7 +26,7 @@ struct ProvenanceStep
 	std::string version;
 	std::string command;
 	std::string date;
-	
+
 	ProvenanceStep()
 	{
 	}
@@ -42,12 +42,12 @@ struct ProvenanceStep
 	{
 		char const * la = NULL;
 		char const * le = NULL;
-		
+
 		if ( ! LB.getline(&la,&le) )
 		{
 			throw LineBufferException("Expected ProvenanceStep line not found");
 		}
-		
+
 		name = BaseOp::parseString(la,le);
 		version = BaseOp::parseString(la,le);
 		command = BaseOp::parseString(la,le);

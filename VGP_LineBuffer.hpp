@@ -48,7 +48,7 @@ struct LineBuffer
 	char * bufferptrout;
 	// end of buffer pointer
 	char * bufferptre;
-	
+
 	std::size_t prevlinelen;
 	std::size_t spos;
 
@@ -98,7 +98,7 @@ struct LineBuffer
 	{
 		bufferptrin = bufferptra + read(bufferptra,bufsize);
 	}
-	
+
 	std::size_t getPos() const
 	{
 		return spos;
@@ -141,11 +141,11 @@ struct LineBuffer
 							*a = bufferptrout;
 							*e = bufferptrin-1;
 							bufferptrout = bufferptrin;
-							
+
 							std::size_t const linelen = (*e-*a)+1;
 							prevlinelen = linelen;
 							spos += linelen;
-							
+
 							return true;
 						}
 						/* otherwise we append an artifical newline */
@@ -166,11 +166,11 @@ struct LineBuffer
 
 							*a = bufferptra;
 							*e = bufferptre - 1;
-							
+
 							std::size_t const linelen = *e-*a;
 							prevlinelen = linelen;
 							spos += linelen;
-							
+
 							return true;
 						}
 					}
@@ -219,11 +219,11 @@ struct LineBuffer
 				*e = lineend;
 				assert ( *lineend == '\n' );
 				bufferptrout = lineend+1;
-				
+
 				std::size_t const linelen = (*e-*a)+1;
 				prevlinelen = linelen;
 				spos += linelen;
-				
+
 				return true;
 			}
 		}

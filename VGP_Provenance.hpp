@@ -24,34 +24,34 @@
 struct Provenance
 {
 	std::vector<ProvenanceStep> steps;
-	
+
 	Provenance() {}
 	Provenance(LineBuffer & LB)
 	{
 		char const * la = NULL;
 		char const * le = NULL;
-		
+
 		if ( ! LB.getline(&la,&le) )
 		{
 			throw LineBufferException("Expected Provenance line not found");
 		}
-		
+
 		if ( la == le || *la != '!' )
 		{
 			throw LineBufferException(std::string("Expected Provenance line not found (no ! symbol)") + std::string(la,le));
 		}
-				
+
 		++la;
 
 		if ( la == le || *la != ' ' )
 		{
-			throw LineBufferException("Expected Provenance line not found (no space symbol after !)");		
+			throw LineBufferException("Expected Provenance line not found (no space symbol after !)");
 		}
-		
+
 		++la;
-		
+
 		vgp_number_type const n = BaseOp::getNumber(la,le);
-		
+
 		for ( vgp_number_type i = 0; i < n; ++ i )
 		{
 			steps.push_back(ProvenanceStep(LB));
