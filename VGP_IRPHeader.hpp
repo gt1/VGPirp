@@ -26,14 +26,14 @@
 struct IRPHeader
 {
 	FileType FT;
-	Provenance P;
+	std::vector<ProvenanceStep> VP;
 	std::map<char, std::map<char,vgp_number_type > > headerMap;
 
 	IRPHeader() {}
 	IRPHeader(LineBuffer & LB)
 	{
 		FT = FileType(LB);
-		P = Provenance(LB);
+		// P = Provenance(LB);
 		readHeaderLines(LB);
 	}
 
@@ -56,23 +56,31 @@ struct IRPHeader
 				}
 				la++;
 
-				if ( la == le )
+				if ( category == '!' )
 				{
-					throw IRPReaderException(std::string("IRPReader::readHeaderLines: no line type in ") + std::string(linestart,le));
+					ProvenanceStep PS(la,le);
+					VP.push_back(PS);
 				}
-
-				char const linetype = *la++;
-
-				if ( la == le || *la != ' ' )
+				else
 				{
-					throw IRPReaderException(std::string("IRPReader::readHeaderLines: no space after line type type in ") + std::string(linestart,le));
+					if ( la == le )
+					{
+						throw IRPReaderException(std::string("IRPReader::readHeaderLines: no line type in ") + std::string(linestart,le));
+					}
+
+					char const linetype = *la++;
+
+					if ( la == le || *la != ' ' )
+					{
+						throw IRPReaderException(std::string("IRPReader::readHeaderLines: no space after line type type in ") + std::string(linestart,le));
+					}
+
+					++la;
+
+					vgp_number_type const n = BaseOp::getNumber(la,le);
+
+					headerMap[category][linetype] = n;
 				}
-
-				++la;
-
-				vgp_number_type const n = BaseOp::getNumber(la,le);
-
-				headerMap[category][linetype] = n;
 			}
 			else
 			{
@@ -85,7 +93,6 @@ struct IRPHeader
 	std::ostream & printHeader(std::ostream & out) const
 	{
 		out << FT;
-		out << P;
 
 		for (
 			std::map<char, std::map<char,vgp_number_type > >::const_iterator it = headerMap.begin();
@@ -101,6 +108,9 @@ struct IRPHeader
 				out << category << ' ' << sit->first << ' ' << MaxNumberPrint(sit->second) << '\n';
 			}
 		}
+
+		for ( uint64_t i = 0; i < VP.size(); ++i )
+			out << '!' << ' ' << VP[i] << "\n";
 
 		return out;
 	}

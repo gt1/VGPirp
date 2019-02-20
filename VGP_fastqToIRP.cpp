@@ -132,7 +132,7 @@ int main(int argc, char * argv[])
 		}
 		std::string const com = comostr.str();
 
-		header.P.steps.push_back(
+		header.VP.push_back(
 			ProvenanceStep(
 				argv[0],
 				"0.0",
@@ -145,6 +145,7 @@ int main(int argc, char * argv[])
 		header.headerMap['#']['S'] = 0;
 		header.headerMap['@']['S'] = 0;
 		header.headerMap['+']['S'] = 0;
+		header.headerMap['#']['!'] = 1;
 
 		std::fstream out(argv[1], std::ios::in | std::ios::out | std::ios::trunc);
 
