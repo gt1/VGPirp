@@ -27,12 +27,10 @@
 #include "VGP_BaseValid.hpp"
 #include "VGP_QValid.hpp"
 #include "VGP_FastQReaderException.hpp"
+#include "VGP_FastQResult.hpp"
 #include <sstream>
 #include <iostream>
 #include <map>
-
-
-
 
 #include <fstream>
 
