@@ -4,3 +4,5 @@ removespace.sh
 *.fastq
 *.irp
 *.a
+VGP_IRPToFastQ
+VGP_fastqToIRP
