@@ -53,6 +53,13 @@ struct ProvenanceStep
 		command = BaseOp::parseString(la,le);
 		date = BaseOp::parseString(la,le);
 	}
+	ProvenanceStep(char const * la, char const * le)
+	{
+		name = BaseOp::parseString(la,le);
+		version = BaseOp::parseString(la,le);
+		command = BaseOp::parseString(la,le);
+		date = BaseOp::parseString(la,le);
+	}
 };
 
 std::ostream & operator<<(std::ostream & out, ProvenanceStep const & P);
