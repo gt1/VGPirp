@@ -1,3 +1,5 @@
 *~
 removespace.sh
 *.o
+*.fastq
+*.irp
