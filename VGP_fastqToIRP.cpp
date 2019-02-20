@@ -119,7 +119,7 @@ int main(int argc, char * argv[])
 
 		IRPHeader header;
 
-		header.FT.filetype = "VGPirp";
+		header.FT.filetype = "irp";
 		header.FT.fileversion = 1;
 		header.FT.filesubversion = 0;
 
