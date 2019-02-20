@@ -41,5 +41,6 @@ VGP_fastqToIRP: libVGP.a VGP_fastqToIRP.o
 clean:
 	rm -f ${LIBVGP_OBJECTS}
 distclean: clean
-	rm -f ${BINARIES} libVGP.a
+	rm -f ${BINARIES} libVGP.a VGP_fastqToIRP.o
+
 	
