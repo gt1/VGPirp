@@ -76,9 +76,9 @@ struct FileType
 
 				fileversion = BaseOp::getNumber(la,le);
 
-				if ( la == le || *la != ' ' )
+				if ( la == le || *la != '.' )
 				{
-					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after line type type in ") + std::string(linestart,le));
+					throw FileTypeException(std::string("FileType::readFileTypeLine: no dot after version in ") + std::string(linestart,le));
 				}
 
 				++la;
