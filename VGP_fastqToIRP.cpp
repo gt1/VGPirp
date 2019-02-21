@@ -15,89 +15,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
+#include "VGP_GroupLineTools.hpp"
+#include "VGP_HeaderTools.hpp"
 #include "VGP_IRPReader.hpp"
 #include "VGP_FastQReader.hpp"
 #include <fstream>
 
-std::string quote(std::string const s)
-{
-	std::ostringstream ostr;
-
-	ostr << '"';
-
-	for ( uint64_t i = 0; i < s.size(); ++i )
-		if ( s[i] == '"' )
-		{
-			ostr.put('\\');
-			ostr.put('#');
-		}
-		else
-		{
-			ostr.put(s[i]);
-		}
-
-	ostr << '"';
-
-	return ostr.str();
-}
-
-std::string getGroupLineMax(std::string const & lane, std::vector<std::string> Vin, vgp_number_type n)
-{
-	std::ostringstream ostr;
-
-	ostr << "g"
-		<< " " << MaxNumberPrint(n)
-		<< " " << lane.size() << " " << lane;
-
-	std::ostringstream fnostr;
-
-	for ( uint64_t i = 0; i < Vin.size(); ++i )
-	{
-		if ( i )
-			fnostr << ",";
-
-		fnostr << quote(Vin[i]);
-	}
-
-	std::string const fn = fnostr.str();
-
-	ostr << " " << fn.size() << " " << fn;
-
-	return ostr.str();
-}
-
-std::string getGroupLine(std::string const & lane, std::vector<std::string> Vin, vgp_number_type n, std::size_t const minlen)
-{
-	std::ostringstream ostr;
-
-	ostr << "g"
-		<< " " << n
-		<< " " << lane.size() << " " << lane;
-
-	std::ostringstream fnostr;
-
-	for ( uint64_t i = 0; i < Vin.size(); ++i )
-	{
-		if ( i )
-			fnostr << ",";
-
-		fnostr << quote(Vin[i]);
-	}
-
-	std::string const fn = fnostr.str();
-
-	ostr << " " << fn.size() << " " << fn;
-
-	std::string s = ostr.str();
-
-	if ( s.size() < minlen )
-	{
-		std::string const pad(minlen-s.size(),' ');
-		s += pad;
-	}
-
-	return s;
-}
 
 int main(int argc, char * argv[])
 {
@@ -114,8 +37,8 @@ int main(int argc, char * argv[])
 			Vin.push_back(argv[i]);
 
 		std::string const lane = "lane";
-		std::size_t const mingrouplensize = getGroupLineMax(lane,Vin,0).size();
-		std::string readgroupline = getGroupLine(lane,Vin,0,mingrouplensize);
+		std::size_t const mingrouplensize = GroupLineTools::getGroupLineMax(lane,Vin,0).size();
+		std::string readgroupline = GroupLineTools::getGroupLine(lane,Vin,0,mingrouplensize);
 
 		IRPHeader header;
 
@@ -128,7 +51,7 @@ int main(int argc, char * argv[])
 		{
 			if ( i )
 				comostr << ' ';
-			comostr << quote(argv[i]);
+			comostr << HeaderTools::quote(argv[i]);
 		}
 		std::string const com = comostr.str();
 
@@ -234,7 +157,7 @@ int main(int argc, char * argv[])
 		out.seekp(0);
 		out << header;
 
-		readgroupline = getGroupLine(lane,Vin,numpairs,mingrouplensize);
+		readgroupline = GroupLineTools::getGroupLine(lane,Vin,numpairs,mingrouplensize);
 		out << readgroupline;
 
 		delete pFQR;
