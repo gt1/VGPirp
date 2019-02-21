@@ -2,10 +2,13 @@ CXXFLAGS=-O3 -g
 
 BINARIES=VGP_fastqToIRP VGP_IRPToFastQ VGP_samToPBR
 
-HEADERS = VGP_AutoArray.hpp VGP_BaseOp.hpp VGP_BaseOpException.hpp VGP_BaseValid.hpp VGP_FastQReader.hpp VGP_FastQReaderException.hpp \
-	VGP_FileType.hpp VGP_FileTypeException.hpp VGP_IRPHeader.hpp VGP_IRPReadData.hpp VGP_IRPReader.hpp VGP_IRPReaderException.hpp \
-	VGP_IRPResult.hpp VGP_LineBuffer.hpp VGP_LineBufferException.hpp VGP_MaxNumberPrint.hpp VGP_NumberType.hpp VGP_Provenance.hpp \
-	VGP_ProvenanceStep.hpp VGP_QValid.hpp VGP_ReadGroup.hpp VGP_FastQResult.hpp VGP_SAMReaderException.hpp VGP_SAMReader.hpp
+HEADERS = \
+	VGP_AutoArray.hpp VGP_BaseOp.hpp VGP_BaseOpException.hpp VGP_BaseValid.hpp VGP_FastQReader.hpp \
+	VGP_FastQReaderException.hpp VGP_FileType.hpp VGP_FileTypeException.hpp VGP_IRPHeader.hpp VGP_IRPReadData.hpp \
+	VGP_IRPReader.hpp VGP_IRPReaderException.hpp VGP_IRPResult.hpp VGP_LineBuffer.hpp VGP_LineBufferException.hpp \
+	VGP_MaxNumberPrint.hpp VGP_NumberType.hpp VGP_Provenance.hpp VGP_ProvenanceStep.hpp VGP_QValid.hpp \
+	VGP_ReadGroup.hpp VGP_FastQResult.hpp VGP_SAMReaderException.hpp VGP_SAMReader.hpp VGP_BRPHeader.hpp \
+	VGP_GroupLineTools.hpp VGP_HeaderTools.hpp VGP_GroupLineTools.hpp
 
 all: ${BINARIES}
 
@@ -35,9 +38,11 @@ VGP_FastQResult.o: VGP_FastQResult.cpp ${HEADERS}
 	${CXX} ${CXXFLAGS} -c VGP_FastQResult.cpp -o VGP_FastQResult.o
 VGP_samToPBR.o: VGP_samToPBR.cpp ${HEADERS}
 	${CXX} ${CXXFLAGS} -c VGP_samToPBR.cpp -o VGP_samToPBR.o
+VGP_BRPHeader.o: VGP_BRPHeader.cpp ${HEADERS}
+	${CXX} ${CXXFLAGS} -c VGP_BRPHeader.cpp -o VGP_BRPHeader.o
 
 LIBVGP_OBJECTS = VGP_BaseOpException.o VGP_FileType.o VGP_IRPHeader.o VGP_IRPResult.o VGP_LineBufferException.o VGP_MaxNumberPrint.o VGP_Provenance.o \
-	VGP_ProvenanceStep.o VGP_ReadGroup.o VGP_FastQResult.o
+	VGP_ProvenanceStep.o VGP_ReadGroup.o VGP_FastQResult.o VGP_BRPHeader.o
 libVGP.a: ${LIBVGP_OBJECTS}
 	ar rc libVGP.a ${LIBVGP_OBJECTS}
 
