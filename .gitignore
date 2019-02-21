@@ -6,3 +6,6 @@ removespace.sh
 *.a
 VGP_IRPToFastQ
 VGP_fastqToIRP
+*.sam
+*.bam
+VGP_samToPBR
