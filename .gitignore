@@ -8,4 +8,5 @@ VGP_IRPToFastQ
 VGP_fastqToIRP
 *.sam
 *.bam
+*.brp
 VGP_samToPBR
