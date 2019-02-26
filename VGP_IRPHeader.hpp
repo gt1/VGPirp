@@ -109,7 +109,7 @@ struct IRPHeader
 			}
 		}
 
-		for ( uint64_t i = 0; i < VP.size(); ++i )
+		for ( std::vector<ProvenanceStep>::size_type i = 0; i < VP.size(); ++i )
 			out << '!' << ' ' << VP[i] << "\n";
 
 		return out;

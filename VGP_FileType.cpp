@@ -19,6 +19,8 @@
 
 std::ostream & operator<<(std::ostream & out, FileType const & FT)
 {
-	out << '.' << ' ' << FT.filetype << ' ' << FT.fileversion << '.' << FT.filesubversion << '\n';
+	out << '1' << ' ' << FT.filetype.size() << ' ' << FT.filetype << ' ' << FT.fileversion << ' ' << FT.filesubversion << '\n';
+	if ( FT.subfiletype.size() )
+		out << '2' << ' ' << FT.subfiletype.size() << ' ' << FT.subfiletype << '\n';
 	return out;
 }

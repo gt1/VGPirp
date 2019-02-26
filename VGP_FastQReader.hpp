@@ -86,7 +86,7 @@ struct FastQReader : public BaseValid, public QValid
 	FastQReader(std::string const & rfn, std::size_t buffersize = 1)
 	:
 		BaseValid(), QValid(),
-		pin0(new std::ifstream(rfn,std::ios::in)),
+		pin0(new std::ifstream(rfn.c_str(),std::ios::in)),
 		pin1(NULL),
 		in0(*pin0),
 		in1(*pin0),
@@ -197,8 +197,8 @@ struct FastQReader : public BaseValid, public QValid
 		char const * la = NULL;
 		char const * le = NULL;
 
-		vgp_number_type fvalid = 0;
-		vgp_number_type rvalid = 0;
+		//vgp_number_type fvalid = 0;
+		//vgp_number_type rvalid = 0;
 
 		forward.S_o = forward.Q_o = forward.N_o = 0;
 		reverse.S_o = reverse.Q_o = reverse.N_o = 0;
