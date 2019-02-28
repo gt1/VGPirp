@@ -15,3 +15,9 @@ format:
 ```
 VGP_fastqToIRP out.irp in.fastq
 ```
+
+Convert IRP to interval pair FastQ file:
+
+```
+VGP_IRPToFastQ < in.irp > out.fastq
+```
