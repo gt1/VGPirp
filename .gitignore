@@ -10,3 +10,6 @@ VGP_fastqToIRP
 *.bam
 *.brp
 VGP_samToPBR
+*.bin
+*.bpr
+*.pbr
