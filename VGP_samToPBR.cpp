@@ -36,7 +36,7 @@ int main(int argc, char * argv[])
 		header.FT.fileversion = 1;
 		header.FT.filesubversion = 0;
 		
-		header.FT.subfiletype = ".pbr";
+		header.FT.subfiletype = "pbr";
 
 		std::ostringstream comostr;
 		for ( int i = 0; i < argc; ++i )
