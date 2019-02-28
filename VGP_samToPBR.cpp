@@ -35,7 +35,7 @@ int main(int argc, char * argv[])
 		header.FT.filetype = "seq";
 		header.FT.fileversion = 1;
 		header.FT.filesubversion = 0;
-		
+
 		header.FT.subfiletype = "pbr";
 
 		std::ostringstream comostr;
