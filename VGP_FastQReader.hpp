@@ -108,6 +108,10 @@ struct FastQReader : public BaseValid, public QValid
 	{
 		char const * la = NULL;
 		char const * le = NULL;
+		std::size_t lseq = 0;
+		std::size_t nseq = 0;
+		std::size_t lq = 0;
+		// std::size_t nq = 0;
 
 		// read name
 		if ( LB.getline(&la,&le) )
@@ -133,6 +137,37 @@ struct FastQReader : public BaseValid, public QValid
 		{
 			throw FastQReaderException(std::string("FastQReader::readData: no @ found"));
 		}
+
+		while ( LB.getline(&la,&le) )
+		{
+			if ( le-la && la[0] == '+' )
+			{
+				LB.putback(la,le);
+				break;
+			}
+			else
+			{
+				std::size_t const ladd = le-la;
+
+				data.S.ensureSize(lseq + ladd);
+
+				std::copy(la,le,data.S.begin() + lseq);
+
+				lseq += ladd;
+				nseq += 1;
+			}
+		}
+
+		if ( nseq )
+		{
+			data.S_o = lseq;
+		}
+		else
+		{
+			throw FastQReaderException(std::string("FastQReader::readData: no sequence data found"));
+		}
+
+		#if 0
 		// sequence data
 		if ( LB.getline(&la,&le) )
 		{
@@ -144,6 +179,8 @@ struct FastQReader : public BaseValid, public QValid
 		{
 			throw FastQReaderException(std::string("FastQReader::readData: no sequence data found"));
 		}
+		#endif
+
 		// plus line
 		if ( LB.getline(&la,&le) )
 		{
@@ -157,23 +194,37 @@ struct FastQReader : public BaseValid, public QValid
 			else
 			{
 				LB.putback(la,le);
-				throw FastQReaderException(std::string("FastQReader::readData: sequence plus at start of ") + std::string(linestart,le));
+				throw FastQReaderException(std::string("FastQReader::readData: no plus at start of ") + std::string(linestart,le));
 			}
 		}
 		else
 		{
-			throw FastQReaderException(std::string("FastQReader::readData: no sequence data found"));
+			throw FastQReaderException(std::string("FastQReader::readData: no plus line found"));
 		}
-		// quality data
-		if ( LB.getline(&la,&le) )
+
+		while ( lq < lseq )
 		{
-			data.Q.ensureSize(le-la);
-			std::copy(la,le,data.Q.begin());
-			data.Q_o = le-la;
+			// quality data
+			if ( LB.getline(&la,&le) )
+			{
+				size_t const qadd = le-la;
+
+				data.Q.ensureSize(lq + qadd);
+				std::copy(la,le,data.Q.begin()+lq);
+
+				lq += qadd;
+			}
+			else
+			{
+				throw FastQReaderException(std::string("FastQReader::readData: insufficient quality data found"));
+			}
 		}
-		else
+
+		data.Q_o = lq;
+
+		if ( lq != lseq )
 		{
-			throw FastQReaderException(std::string("FastQReader::readData: no quality data found"));
+			throw FastQReaderException(std::string("FastQReader::readData: inconsistent quality data found"));
 		}
 
 		for ( std::size_t i = 0; i < data.S_o; ++i )
