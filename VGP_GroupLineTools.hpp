@@ -56,7 +56,7 @@ struct GroupLineTools
 		std::ostringstream ostr;
 
 		ostr << "g"
-			<< " " << n
+			<< " " << MaxNumberPrint(n)
 			<< " " << lane.size() << " " << lane;
 
 		std::ostringstream fnostr;
