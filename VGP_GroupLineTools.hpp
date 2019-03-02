@@ -26,6 +26,17 @@
 
 struct GroupLineTools
 {
+	static std::string getGroupLineMax(std::string const & lane, vgp_number_type n)
+	{
+		std::ostringstream ostr;
+
+		ostr << "g"
+			<< " " << MaxNumberPrint(n)
+			<< " " << lane.size() << " " << lane;
+
+		return ostr.str();
+	}
+
 	static std::string getGroupLineMax(std::string const & lane, std::vector<std::string> Vin, vgp_number_type n)
 	{
 		std::ostringstream ostr;
@@ -36,7 +47,7 @@ struct GroupLineTools
 
 		std::ostringstream fnostr;
 
-		for ( uint64_t i = 0; i < Vin.size(); ++i )
+		for ( std::vector<std::string>::size_type i = 0; i < Vin.size(); ++i )
 		{
 			if ( i )
 				fnostr << ",";
@@ -61,7 +72,7 @@ struct GroupLineTools
 
 		std::ostringstream fnostr;
 
-		for ( uint64_t i = 0; i < Vin.size(); ++i )
+		for ( std::vector<std::string>::size_type i = 0; i < Vin.size(); ++i )
 		{
 			if ( i )
 				fnostr << ",";

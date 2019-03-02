@@ -32,12 +32,14 @@ int main(int argc, char * argv[])
 
 		BRPHeader header;
 
-		header.FT.filetype = "brp";
+		header.FT.filetype = "seq";
 		header.FT.fileversion = 1;
 		header.FT.filesubversion = 0;
 
+		header.FT.subfiletype = "pbr";
+
 		std::ostringstream comostr;
-		for ( uint64_t i = 0; i < argc; ++i )
+		for ( int i = 0; i < argc; ++i )
 		{
 			if ( i )
 				comostr << ' ';
@@ -74,6 +76,8 @@ int main(int argc, char * argv[])
 		std::fstream out(argv[1], std::ios::in | std::ios::out | std::ios::trunc);
 
 		out << header;
+
+		// GroupLineTools::getGroupLineMax();
 
 		SAMReader SR(std::cin);
 

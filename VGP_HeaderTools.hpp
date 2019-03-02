@@ -29,7 +29,7 @@ struct HeaderTools
 
 		ostr << '"';
 
-		for ( uint64_t i = 0; i < s.size(); ++i )
+		for ( std::string::size_type i = 0; i < s.size(); ++i )
 			if ( s[i] == '"' )
 			{
 				ostr.put('\\');

@@ -1,4 +1,4 @@
-CXXFLAGS=-O3 -g
+CXXFLAGS=-O3 -g -ansi -pedantic -W -Wall
 
 BINARIES=VGP_fastqToIRP VGP_IRPToFastQ VGP_samToPBR
 
@@ -56,6 +56,6 @@ VGP_samToPBR: libVGP.a VGP_samToPBR.o
 clean:
 	rm -f ${LIBVGP_OBJECTS}
 distclean: clean
-	rm -f ${BINARIES} libVGP.a VGP_fastqToIRP.o
+	rm -f ${BINARIES} libVGP.a VGP_fastqToIRP.o VGP_IRPToFastQ.o  VGP_samToPBR.o
 
 	

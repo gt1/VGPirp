@@ -74,8 +74,6 @@ struct PBRRecord
  */
 struct SAMReader : public BaseValid, public QValid
 {
-	std::istream & in;
-	LineBuffer LB;
 
 	struct TagField
 	{
@@ -138,15 +136,18 @@ struct SAMReader : public BaseValid, public QValid
 		return hash;
 	}
 
+	std::size_t numfields;
+	std::size_t numtags;
+	std::size_t numrg;
+
+	std::istream & in;
+	LineBuffer LB;
+
 	AutoArray< std::pair<char const *,char const *> > T;
 	AutoArray< TagField > TAGS;
 	AutoArray< ReadGroup > RG;
 	AutoArray< char > PW;
 	AutoArray< char > N;
-
-	std::size_t numfields;
-	std::size_t numtags;
-	std::size_t numrg;
 
 	std::istringstream rqstr;
 
@@ -419,7 +420,7 @@ struct SAMReader : public BaseValid, public QValid
 			if (
 				PRG.second - PRG.first != 1
 				||
-				(RGtag->T.second-RGtag->T.first) != PRG.first->ID.size()
+				(RGtag->T.second-RGtag->T.first) != static_cast< std::ptrdiff_t> (PRG.first->ID.size())
 				||
 				strncmp(
 					RGtag->T.first,
@@ -431,7 +432,7 @@ struct SAMReader : public BaseValid, public QValid
 				throw SAMReaderException(std::string("SAMReader::readData: no read group found for ") + std::string(RGtag->T.first,RGtag->T.second));
 			}
 
-			std::string const * sPU = &(PRG.first->PU);
+			// std::string const * sPU = &(PRG.first->PU);
 
 			char const * nstart = NULL;
 			char const * nend = NULL;

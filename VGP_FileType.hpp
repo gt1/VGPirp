@@ -27,6 +27,8 @@ struct FileType
 	vgp_number_type fileversion;
 	vgp_number_type filesubversion;
 
+	std::string subfiletype;
+
 	FileType() {}
 	FileType(LineBuffer & LB) : fileversion(0), filesubversion(0)
 	{
@@ -39,18 +41,19 @@ struct FileType
 		char const * le = NULL;
 
 		std::size_t found = 0;
+		std::size_t subfound = 0;
 
 		while ( LB.getline(&la,&le) )
 		{
 			char const * linestart = la;
 
-			if ( la != le && *la == '.' )
+			if ( la != le && *la == '1' )
 			{
 				++la;
 
 				if ( la == le || *la != ' ' )
 				{
-					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after plus in ") + std::string(linestart,le));
+					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after 1 in ") + std::string(linestart,le));
 				}
 				la++;
 
@@ -59,26 +62,24 @@ struct FileType
 					throw FileTypeException(std::string("FileType::readFileTypeLine: no line type in ") + std::string(linestart,le));
 				}
 
-				char const * typestart = la;
-				while ( la != le && isalnum(*la) )
-					++la;
+				//char const * typestart = la;
 
-				char const * typeend = la;
+				filetype = BaseOp::parseString(la,le);
 
-				filetype = std::string(typestart,typeend);
-
+				#if 0
 				if ( la == le || *la != ' ' )
 				{
-					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after line type type in ") + std::string(linestart,le));
+					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after line type string in ") + std::string(linestart,le) + " file type \"" + filetype + "\"" );
 				}
 
 				++la;
+				#endif
 
 				fileversion = BaseOp::getNumber(la,le);
 
-				if ( la == le || *la != '.' )
+				if ( la == le || *la != ' ' )
 				{
-					throw FileTypeException(std::string("FileType::readFileTypeLine: no dot after version in ") + std::string(linestart,le));
+					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after version in ") + std::string(linestart,le));
 				}
 
 				++la;
@@ -86,6 +87,20 @@ struct FileType
 				filesubversion = BaseOp::getNumber(la,le);
 
 				found += 1;
+			}
+			else if ( la != le && found && *la == '2' )
+			{
+				++la;
+
+				if ( la == le || *la != ' ' )
+				{
+					throw FileTypeException(std::string("FileType::readFileTypeLine: no space after 2 in ") + std::string(linestart,le));
+				}
+				la++;
+
+				subfiletype = BaseOp::parseString(la,le);
+
+				subfound += 1;
 			}
 			else
 			{

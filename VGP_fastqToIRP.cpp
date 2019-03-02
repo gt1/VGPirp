@@ -33,7 +33,7 @@ int main(int argc, char * argv[])
 		}
 
 		std::vector<std::string> Vin;
-		for ( uint64_t i = 2; i < argc; ++i )
+		for ( int i = 2; i < argc; ++i )
 			Vin.push_back(argv[i]);
 
 		std::string const lane = "lane";
@@ -42,12 +42,13 @@ int main(int argc, char * argv[])
 
 		IRPHeader header;
 
-		header.FT.filetype = "irp";
+		header.FT.filetype = "seq";
 		header.FT.fileversion = 1;
 		header.FT.filesubversion = 0;
+		header.FT.subfiletype = "irp";
 
 		std::ostringstream comostr;
-		for ( uint64_t i = 0; i < argc; ++i )
+		for ( int i = 0; i < argc; ++i )
 		{
 			if ( i )
 				comostr << ' ';
@@ -55,12 +56,25 @@ int main(int argc, char * argv[])
 		}
 		std::string const com = comostr.str();
 
+		std::string timestring;
+		{
+			time_t const t = time(0);
+			char * ct = ctime(&t);
+			timestring = ct;
+
+			std::string::size_type bs = 0;
+			while ( bs < timestring.size() && isspace(timestring[timestring.size()-bs-1]) )
+				++bs;
+
+			timestring = timestring.substr(0,timestring.size()-bs);
+		}
+
 		header.VP.push_back(
 			ProvenanceStep(
 				argv[0],
 				"0.0",
 				com,
-				"now"
+				timestring
 			)
 		);
 
@@ -68,6 +82,9 @@ int main(int argc, char * argv[])
 		header.headerMap['#']['S'] = 0;
 		header.headerMap['@']['S'] = 0;
 		header.headerMap['+']['S'] = 0;
+		header.headerMap['#']['Q'] = 0;
+		header.headerMap['@']['Q'] = 0;
+		header.headerMap['+']['Q'] = 0;
 		header.headerMap['#']['!'] = 1;
 
 		std::fstream out(argv[1], std::ios::in | std::ios::out | std::ios::trunc);
@@ -152,6 +169,9 @@ int main(int argc, char * argv[])
 		header.headerMap['#']['S'] = numseq;
 		header.headerMap['@']['S'] = maxreadlen;
 		header.headerMap['+']['S'] = totalbp;
+		header.headerMap['#']['Q'] = numseq;
+		header.headerMap['@']['Q'] = maxreadlen;
+		header.headerMap['+']['Q'] = totalbp;
 
 		// rewrite header and group line
 		out.seekp(0);
