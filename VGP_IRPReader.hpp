@@ -82,12 +82,12 @@ struct IRPReader : public BaseValid, public QValid
 				char const * linestart = la;
 
 				if (
-					RG.groupheader_o
+					RG.groupname_o
 					&&
 					RG.numseen != RG.numreads
 				)
 				{
-					throw IRPReaderException(std::string("IRPReader::readData: read group ") + std::string(RG.groupheader.begin(),RG.groupheader.begin() + RG.groupheader_o) + std::string(" is incomplete"));
+					throw IRPReaderException(std::string("IRPReader::readData: read group ") + std::string(RG.groupname.begin(),RG.groupname.begin() + RG.groupname_o) + std::string(" is incomplete"));
 				}
 
 				++la;
@@ -108,8 +108,8 @@ struct IRPReader : public BaseValid, public QValid
 
 				++la;
 
-				RG.groupheader_o = BaseOp::parseString(la,le,RG.groupheader);
-				RG.groupfile_o = BaseOp::parseString(la,le,RG.groupfile);
+				// RG.groupheader_o = BaseOp::parseString(la,le,RG.groupheader);
+				RG.groupname_o = BaseOp::parseString(la,le,RG.groupname);
 				RG.numseen = 0;
 
 				if ( RG.numreads )
@@ -140,12 +140,12 @@ struct IRPReader : public BaseValid, public QValid
 		else
 		{
 			if (
-				RG.groupheader_o
+				RG.groupname_o
 				&&
 				RG.numseen != RG.numreads
 			)
 			{
-				throw IRPReaderException(std::string("IRPReader::readData: read group ") + std::string(RG.groupheader.begin(),RG.groupheader.begin() + RG.groupheader_o) + std::string(" is incomplete"));
+				throw IRPReaderException(std::string("IRPReader::readData: read group ") + std::string(RG.groupname.begin(),RG.groupname.begin() + RG.groupname_o) + std::string(" is incomplete"));
 			}
 
 			return NULL;

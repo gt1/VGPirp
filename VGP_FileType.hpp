@@ -20,6 +20,7 @@
 #include "VGP_FileTypeException.hpp"
 #include "VGP_LineBuffer.hpp"
 #include "VGP_BaseOp.hpp"
+#include <sstream>
 
 struct FileType
 {
@@ -111,7 +112,9 @@ struct FileType
 
 		if ( found != 1 )
 		{
-			throw FileTypeException(std::string("FileType::readFileTypeLine: no (unique) file type line found"));
+			std::ostringstream ostr;
+			ostr << "[V] found=" << found;
+			throw FileTypeException(std::string("FileType::readFileTypeLine: no (unique) file type line found ") + ostr.str());
 		}
 	}
 

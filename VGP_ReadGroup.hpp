@@ -23,14 +23,12 @@
 
 struct ReadGroup
 {
-	AutoArray<char> groupheader;
-	vgp_number_type groupheader_o;
-	AutoArray<char> groupfile;
-	vgp_number_type groupfile_o;
+	AutoArray<char> groupname;
+	vgp_number_type groupname_o;
 	vgp_number_type numreads;
 	vgp_number_type numseen;
 
-	ReadGroup() : groupheader(), groupheader_o(0), groupfile(), groupfile_o(0), numreads(0), numseen(0) {}
+	ReadGroup() : groupname(), groupname_o(0), numreads(0), numseen(0) {}
 };
 
 std::ostream & operator<<(std::ostream & out, ReadGroup const & G);
